@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2018/5/20 10:51
-# @Author  : Wang Lei
+# @Author  : QuietWoods
 # @FileName: lstm.py
 # @Software: PyCharm
 # @Email    ：1258481281@qq.com
