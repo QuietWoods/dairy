@@ -12,6 +12,8 @@ import numpy as np
 import collections
 import random
 import pickle
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 import tensorflow as tf
 
