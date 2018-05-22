@@ -21,7 +21,7 @@ sess = tf.Session()
 # 设置参数
 min_word_freq = 5
 rnn_size = 128
-epochs = 1 # 10
+epochs = 10
 batch_size = 100
 learning_rate = 0.001
 training_seq_len = 50
