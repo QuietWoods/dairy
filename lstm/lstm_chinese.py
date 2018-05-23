@@ -16,6 +16,8 @@ import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 import tensorflow as tf
+import jieba
+jieba.load_userdict('mydict.txt')
 
 sess = tf.Session()
 # 设置参数
@@ -36,7 +38,7 @@ data_file = 'patent.txt'
 model_path = 'patent_model'
 full_model_dir = os.path.join(data_dir, model_path)
 #punctuation = string.punctuation
-puncturation='，。？！；、：'
+punctuation = '，。？！；、：'
 print('punctuation: {}'.format(punctuation))
 punctuation = ''.join([x for x in punctuation if x not in ['-', "'"]])
 
@@ -64,10 +66,14 @@ if not os.path.isfile(os.path.join(data_dir, data_file)):
         for fname in os.listdir(patent_dir):
             if fname.startswith('CN'):
                 with open(os.path.join(patent_dir, fname), 'r') as f:
-                    for line in f.readline():
-                        patents_content
-
+                    content = f.read()
+                    content = content.replace('\n', ' ')
+                    patents_content.append(' '.join(jieba.cut(content)))
+                file_num -= 1
+                if file_num == 0:
+                    break
     with open(os.path.join(data_dir, data_file), 'w') as out_conn:
+        s_text = ' '.join(patents_content)
         out_conn.write(s_text)
 else:
     with open(os.path.join(data_dir, data_file), 'r') as file_conn:
@@ -75,7 +81,7 @@ else:
 
 # 清洗数据:移除标点符号和多余的空格
 s_text = re.sub(r'[{}]'.format(punctuation), ' ', s_text)
-s_text = re.sub('\s+', ' ', s_text).strip().lower()
+# s_text = re.sub('\s+', ' ', s_text).strip().lower()
 
 
 # 创建莎士比亚词汇表
@@ -173,7 +179,7 @@ class LSTM_Model:
             self.train_op = optimizer.apply_gradients(zip(gradients, tf.trainable_variables()))
 
     def sample(self, sess, words=ix2vocab, vocab=vocab2ix, num=10,
-               prime_text='thou art'):
+               prime_text='电动 汽车'):
         state = sess.run(self.lstm_cell.zero_state(1, tf.float32))
         word_list = prime_text.split()
         for word in word_list[:-1]:
@@ -268,5 +274,5 @@ plt.plot(train_loss, 'k-')
 plt.title('Sequence to Sequence Loss')
 plt.xlabel('Generation')
 plt.ylabel('Loss')
-plt.savefig('loss.png')
+plt.savefig('patent_loss.png')
 plt.close()
